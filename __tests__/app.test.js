@@ -24,4 +24,27 @@ describe("GET /api/categories", () => {
         });
       });
   });
+  it("should respond with a 500 status code if there is a server error", () => {
+    return request(app)
+      .get("/api/categories")
+      .then((res) => {
+        expect(res.status).toBe(200);
+      })
+      .catch((error) => {
+        expect(error.status).toBe(500);
+        expect(error.message).toBe("Internal server error");
+      });
+  });
+});
+
+describe("404 error on /api/not-path", () => {
+  it("status 404 returns error message bad path when provided an invalid path", () => {
+    return request(app)
+      .get("/api/not-path")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Path not found!");
+      });
+  });
 });
