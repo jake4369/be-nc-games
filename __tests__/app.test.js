@@ -44,6 +44,11 @@ describe("GET /api/reviews", () => {
           expect(review).toHaveProperty("votes", expect.any(Number));
           expect(review).toHaveProperty("designer", expect.any(String));
           expect(review).toHaveProperty("comment_count", expect.any(Number));
+
+          const matchingReview = [...reviews].find(
+            (testReview) => testReview.review_id === review.review_id
+          );
+          expect(review.comment_count).toBe(matchingReview.comment_count);
         });
       });
   });
