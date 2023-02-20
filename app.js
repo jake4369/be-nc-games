@@ -2,9 +2,12 @@ const express = require("express");
 const app = express();
 
 const categoriesController = require("./controllers/categoriesController");
+const reviewsController = require("./controllers/reviewsController");
 const errorHandlingController = require("./controllers/errorHandlingController");
 
 app.get("/api/categories", categoriesController.getCategories);
+
+app.get("/api/reviews", reviewsController.getReviews);
 
 app.all("*", (req, res) => {
   res.status(404).send({ msg: "Path not found!" });
