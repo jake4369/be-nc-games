@@ -11,16 +11,39 @@ beforeEach(() => {
 afterAll(() => db.end());
 
 describe("GET /api/categories", () => {
-  it("should response with an array of objects with the properties 'slug' and 'description", () => {
+  it("should respond with an array of objects with the properties 'slug' and 'description", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
       .then(({ body }) => {
         const { categories } = body;
         expect(categories.length).toBe(4);
-        categories.forEach((catagory) => {
-          expect(catagory).toHaveProperty("slug", expect.any(String));
-          expect(catagory).toHaveProperty("description", expect.any(String));
+        categories.forEach((category) => {
+          expect(category).toHaveProperty("slug", expect.any(String));
+          expect(category).toHaveProperty("description", expect.any(String));
+        });
+      });
+  });
+});
+
+describe("GET /api/reviews", () => {
+  it("should respond with an array of review objects with the correct properties", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).toBe(13);
+        reviews.forEach((review) => {
+          expect(review).toHaveProperty("owner", expect.any(String));
+          expect(review).toHaveProperty("title", expect.any(String));
+          expect(review).toHaveProperty("review_id", expect.any(Number));
+          expect(review).toHaveProperty("category", expect.any(String));
+          expect(review).toHaveProperty("review_img_url", expect.any(String));
+          expect(review).toHaveProperty("created_at", expect.any(String));
+          expect(review).toHaveProperty("votes", expect.any(Number));
+          expect(review).toHaveProperty("designer", expect.any(String));
+          expect(review).toHaveProperty("review_id", expect.any(Number));
         });
       });
   });
