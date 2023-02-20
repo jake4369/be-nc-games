@@ -47,6 +47,18 @@ describe("GET /api/reviews", () => {
         });
       });
   });
+  it("should respond with data sorted by date in descending order", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        const sortedReviews = [...reviews].sort((a, b) =>
+          a.created_at > b.created_at ? -1 : 1
+        );
+        expect(reviews).toEqual(sortedReviews);
+      });
+  });
 });
 
 describe("404 error on /api/not-path", () => {
