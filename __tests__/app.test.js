@@ -110,40 +110,35 @@ describe("GET /api/reviews/:review_id", () => {
 });
 
 describe("GET /api/reviews/:review_id/comments", () => {
+  it("should respond with an empty array if there are no comments for the given review_id", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toEqual([]);
+      });
+  });
   it("should respond with an array of comments for the given review_id", () => {
-    const expectedComments = [
-      {
-        author: "bainesface",
-        body: "I loved this game too!",
-        comment_id: 1,
-        created_at: "2017-11-22T12:43:33.389Z",
-        review_id: 2,
-        votes: 16,
-      },
-      {
-        author: "bainesface",
-        body: "EPIC board game!",
-        comment_id: 4,
-        created_at: "2017-11-22T12:36:03.389Z",
-        review_id: 2,
-        votes: 16,
-      },
-      {
-        author: "mallionaire",
-        body: "Now this is a story all about how, board games turned my life upside down",
-        comment_id: 5,
-        created_at: "2021-01-18T10:24:05.410Z",
-        review_id: 2,
-        votes: 13,
-      },
-    ];
-
     return request(app)
       .get("/api/reviews/2/comments")
       .expect(200)
       .then(({ body }) => {
         const { comments } = body;
-        expect(comments).toEqual(expectedComments);
+        const sortedComments = [...comments].sort((a, b) =>
+          a.created_at > b.created_at ? -1 : 1
+        );
+
+        expect(comments.length).toBe(3);
+        expect(comments).toEqual(sortedComments);
+        comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id", expect.any(Number));
+          expect(comment).toHaveProperty("votes", expect.any(Number));
+          expect(comment).toHaveProperty("created_at", expect.any(String));
+          expect(comment).toHaveProperty("author", expect.any(String));
+          expect(comment).toHaveProperty("body", expect.any(String));
+          expect(comment).toHaveProperty("review_id", expect.any(Number));
+        });
       });
   });
 
@@ -154,15 +149,6 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("Invalid input");
-      });
-  });
-  it("should respond with a 404 status code if no comments are found", () => {
-    return request(app)
-      .get("/api/reviews/100/comments")
-      .expect(404)
-      .then(({ body }) => {
-        const { message } = body;
-        expect(message).toBe("No comments found");
       });
   });
 });
