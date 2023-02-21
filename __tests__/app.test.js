@@ -89,6 +89,15 @@ describe("GET /api/reviews/:review_id", () => {
         expect(review).toMatchObject(expectedReview);
       });
   });
+  it("should respond with a 204 status code if no review is found", () => {
+    return request(app)
+      .get("/api/reviews/100")
+      .expect(204)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe(undefined);
+      });
+  });
 });
 
 describe("404 error on /api/not-path", () => {
