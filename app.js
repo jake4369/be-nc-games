@@ -11,6 +11,11 @@ app.get("/api/reviews", reviewsController.getReviews);
 
 app.get("/api/reviews/:review_id", reviewsController.getReview);
 
+app.get(
+  "/api/reviews/:review_id/comments",
+  reviewsController.getCommentsByReviewId
+);
+
 app.all("*", (req, res) => {
   res.status(400).send({ message: "Path not found!" });
 });

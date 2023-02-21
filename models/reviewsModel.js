@@ -37,3 +37,24 @@ exports.getReview = (review_id) => {
       return review;
     });
 };
+
+exports.getCommentsByReviewId = (review_id) => {
+  return db
+    .query(
+      `
+      SELECT * FROM comments
+      WHERE review_id = $1
+    `,
+      [review_id]
+    )
+    .then((results) => {
+      if (results.rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          message: `No comments found`,
+        });
+      }
+      const comments = results.rows;
+      return comments;
+    });
+};
