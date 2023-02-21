@@ -6,7 +6,7 @@
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./db/seeds/run-seed.js",
-    "test": "node ./db/seeds/run-seed.js && jest",
+    "test": "env-cmd -f .env.test node ./db/seeds/run-seed.js && jest",
     "prepare": "husky install",
     "dev": "nodemon server.js"
   },
@@ -27,6 +27,7 @@
     "pg": "^8.7.3"
   },
   "devDependencies": {
+    "env-cmd": "^10.1.0",
     "husky": "^8.0.2",
     "jest": "^27.5.1",
     "jest-extended": "^2.0.0",

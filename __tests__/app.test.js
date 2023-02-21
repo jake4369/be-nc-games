@@ -66,14 +66,57 @@ describe("GET /api/reviews", () => {
   });
 });
 
-describe("404 error on /api/not-path", () => {
-  it("status 404 returns error message bad path when provided an invalid path", () => {
+describe("GET /api/reviews/:review_id", () => {
+  it("should respond with a single review object", () => {
+    const expectedReview = {
+      review_id: 1,
+      title: "Agricola",
+      designer: "Uwe Rosenberg",
+      owner: "mallionaire",
+      review_img_url:
+        "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700",
+      review_body: "Farmyard fun!",
+      category: "euro game",
+      created_at: "2021-01-18T10:00:20.514Z",
+      votes: 1,
+    };
+
     return request(app)
-      .get("/api/not-path")
+      .get("/api/reviews/1")
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject(expectedReview);
+      });
+  });
+  it("responds with a 400 status code and an error message when passed a bad review id", () => {
+    return request(app)
+      .get("/api/reviews/notAnID")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid input");
+      });
+  });
+  it("should respond with a 404 status code if no review is found", () => {
+    return request(app)
+      .get("/api/reviews/100")
       .expect(404)
       .then(({ body }) => {
-        const { msg } = body;
-        expect(msg).toBe("Path not found!");
+        const { message } = body;
+        expect(message).toBe("Review not found");
+      });
+  });
+});
+
+describe("400 error on /api/not-path", () => {
+  it("status 400 returns error message bad path when provided an invalid path", () => {
+    return request(app)
+      .get("/api/not-path")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Path not found!");
       });
   });
 });

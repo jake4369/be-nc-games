@@ -10,3 +10,16 @@ exports.getReviews = (req, res, next) => {
     })
     .catch((error) => next(error));
 };
+
+exports.getReview = (req, res, next) => {
+  const { review_id } = req.params;
+
+  reviewsModel
+    .getReview(review_id)
+    .then((review) => {
+      res.status(200).json({
+        review: review,
+      });
+    })
+    .catch((error) => next(error));
+};

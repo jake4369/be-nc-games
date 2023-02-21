@@ -16,3 +16,24 @@ exports.getReviews = () => {
       return reviews;
     });
 };
+
+exports.getReview = (review_id) => {
+  return db
+    .query(
+      `
+      SELECT * FROM reviews
+      WHERE review_id = $1
+    `,
+      [review_id]
+    )
+    .then((result) => {
+      const review = result.rows[0];
+      if (!review || review.length === 0) {
+        return Promise.reject({
+          status: 404,
+          message: `Review not found`,
+        });
+      }
+      return review;
+    });
+};
