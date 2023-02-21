@@ -109,6 +109,50 @@ describe("GET /api/reviews/:review_id", () => {
   });
 });
 
+describe("GET /api/reviews/:review_id/comments", () => {
+  it("should respond with an empty array if there are no comments for the given review_id", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toEqual([]);
+      });
+  });
+  it("should respond with an array of comments for the given review_id", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        const sortedComments = [...comments].sort((a, b) =>
+          a.created_at > b.created_at ? -1 : 1
+        );
+
+        expect(comments.length).toBe(3);
+        expect(comments).toEqual(sortedComments);
+        comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id", expect.any(Number));
+          expect(comment).toHaveProperty("votes", expect.any(Number));
+          expect(comment).toHaveProperty("created_at", expect.any(String));
+          expect(comment).toHaveProperty("author", expect.any(String));
+          expect(comment).toHaveProperty("body", expect.any(String));
+          expect(comment).toHaveProperty("review_id", expect.any(Number));
+        });
+      });
+  });
+
+  it("responds with a 400 status code and an error message when passed a bad review id", () => {
+    return request(app)
+      .get("/api/reviews/notAnID/comments")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid input");
+      });
+  });
+});
+
 describe("400 error on /api/not-path", () => {
   it("status 400 returns error message bad path when provided an invalid path", () => {
     return request(app)

@@ -23,3 +23,16 @@ exports.getReview = (req, res, next) => {
     })
     .catch((error) => next(error));
 };
+
+exports.getCommentsByReviewId = (req, res, next) => {
+  const { review_id } = req.params;
+
+  reviewsModel
+    .getCommentsByReviewId(review_id)
+    .then((comments) => {
+      res.status(200).json({
+        comments: comments,
+      });
+    })
+    .catch((error) => next(error));
+};
