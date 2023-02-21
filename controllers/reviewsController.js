@@ -17,9 +17,6 @@ exports.getReview = (req, res, next) => {
   reviewsModel
     .getReview(review_id)
     .then((review) => {
-      if (!review) {
-        return res.status(204).json({ message: undefined });
-      }
       res.status(200).json({
         review: review,
       });
