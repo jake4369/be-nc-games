@@ -28,6 +28,12 @@ exports.getReview = (review_id) => {
     )
     .then((result) => {
       const review = result.rows[0];
+      if (!review) {
+        return Promise.reject({
+          status: 404,
+          message: `Review not found`,
+        });
+      }
       return review;
     });
 };
