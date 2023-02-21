@@ -9,6 +9,8 @@ app.get("/api/categories", categoriesController.getCategories);
 
 app.get("/api/reviews", reviewsController.getReviews);
 
+app.get("/api/reviews/:review_id", reviewsController.getReview);
+
 app.all("*", (req, res) => {
   res.status(404).send({ msg: "Path not found!" });
 });
