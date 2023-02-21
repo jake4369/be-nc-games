@@ -44,16 +44,11 @@ exports.getCommentsByReviewId = (review_id) => {
       `
       SELECT * FROM comments
       WHERE review_id = $1
+      ORDER BY comments.created_at DESC;
     `,
       [review_id]
     )
     .then((results) => {
-      if (results.rowCount === 0) {
-        return Promise.reject({
-          status: 404,
-          message: `No comments found`,
-        });
-      }
       const comments = results.rows;
       return comments;
     });
