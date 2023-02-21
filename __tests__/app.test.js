@@ -69,22 +69,20 @@ describe("GET /api/reviews", () => {
 describe("GET /api/reviews/:review_id", () => {
   it("should respond with a single review object", () => {
     const expectedReview = {
-      review_id: 14,
-      title: "Velit tempor ullamco amet ipsum dolor voluptate.",
-      category: "hidden-roles",
-      designer: "Don Keigh",
-      owner: "cooljmessy",
-      review_body:
-        "Nostrud anim cupidatat incididunt officia cupidatat magna. Cillum commodo voluptate laboris id incididunt esse elit ipsum consectetur non elit elit magna. Aliquip sint amet eiusmod magna. Fugiat non ut ex eiusmod elit. Esse anim irure laborum aute ut ad reprehenderit. Veniam laboris dolore mollit mollit in. Cillum in aliquip adipisicing ipsum et dolor veniam qui ut ullamco aliquip in. Dolor fugiat elit laborum elit cupidatat aute qui nostrud. Duis incididunt ea nostrud minim consequat. Reprehenderit mollit cupidatat do culpa aliqua culpa mollit minim eiusmod. Deserunt occaecat ipsum ex ut pariatur eu veniam cillum nulla ex nostrud. Do nostrud amet duis proident nostrud eiusmod occaecat reprehenderit. Quis et cupidatat tempor qui dolor id veniam in sunt ipsum eiusmod. Sint tempor commodo consectetur mollit proident culpa nulla est tempor ullamco tempor aliquip laboris.",
+      review_id: 1,
+      title: "Agricola",
+      designer: "Uwe Rosenberg",
+      owner: "mallionaire",
       review_img_url:
-        "https://images.pexels.com/photos/8111357/pexels-photo-8111357.jpeg?w=700&h=700",
-      created_at: "2021-02-05T11:27:26.563Z",
-      votes: 3,
-      comment_count: 0,
+        "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700",
+      review_body: "Farmyard fun!",
+      category: "euro game",
+      created_at: "2021-01-18T10:00:20.514Z",
+      votes: 1,
     };
 
     return request(app)
-      .get("/api/reviews/14")
+      .get("/api/reviews/1")
       .expect(200)
       .then(({ body }) => {
         const { review } = body;
