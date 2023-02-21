@@ -146,6 +146,25 @@ describe("GET /api/reviews/:review_id/comments", () => {
         expect(comments).toEqual(expectedComments);
       });
   });
+
+  it("responds with a 400 status code and an error message when passed a bad review id", () => {
+    return request(app)
+      .get("/api/reviews/notAnID/comments")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid input");
+      });
+  });
+  it("should respond with a 404 status code if no comments are found", () => {
+    return request(app)
+      .get("/api/reviews/100/comments")
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("No comments found");
+      });
+  });
 });
 
 describe("400 error on /api/not-path", () => {
