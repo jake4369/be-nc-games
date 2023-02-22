@@ -182,6 +182,26 @@ describe("POST /api/reviews/:reviewId/comments", () => {
           });
       });
   });
+  it("should respond with the posted comment and status code 201, ignoring extra content", () => {
+    const testComment = {
+      username: "mallionaire",
+      body: "Test review",
+      fruit: "banana",
+    };
+
+    return request(app)
+      .post(`/api/reviews/2/comments`)
+      .send(testComment)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment.author).toBe(testComment.username);
+        expect(comment.body).toBe(testComment.body);
+        expect(comment).toHaveProperty("comment_id", expect.any(Number));
+        expect(comment).toHaveProperty("votes", expect.any(Number));
+        expect(comment).toHaveProperty("created_at", expect.any(String));
+      });
+  });
   it("should respond with a 400 status code if posted without a username", () => {
     const testComment = {
       body: "Test review",
