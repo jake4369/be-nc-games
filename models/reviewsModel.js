@@ -27,13 +27,13 @@ exports.getReview = (reviewId) => {
       [reviewId]
     )
     .then((result) => {
-      const review = result.rows[0];
-      if (!review || review.length === 0) {
+      if (result.rowCount === 0) {
         return Promise.reject({
           status: 404,
           message: `Review not found`,
         });
       }
+      const review = result.rows[0];
       return review;
     });
 };
@@ -76,19 +76,22 @@ exports.addCommentByReviewId = (reviewId, username, body) => {
       const comment = result.rows[0];
       return comment;
     })
-    .catch((err) => {
-      if (err.code === "23503" && err.constraint === "comments_author_fkey") {
+    .catch((error) => {
+      if (
+        error.code === "23503" &&
+        error.constraint === "comments_author_fkey"
+      ) {
         return Promise.reject({
           status: 400,
           message: "User not found",
         });
-      } else if (err.code === "22P02") {
+      } else if (error.code === "22P02") {
         return Promise.reject({
           status: 400,
           message: "Invalid review ID",
         });
       } else {
-        return Promise.reject(err);
+        return Promise.reject(error);
       }
     });
 };
