@@ -18,6 +18,11 @@ app.get(
   reviewsController.getCommentsByReviewId
 );
 
+app.post(
+  "/api/reviews/:reviewId/comments",
+  reviewsController.addCommentByReviewId
+);
+
 app.all("*", (req, res) => {
   res.status(400).send({ message: "Path not found!" });
 });
