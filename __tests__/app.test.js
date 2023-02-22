@@ -10,6 +10,7 @@ beforeEach(() => {
 
 afterAll(() => db.end());
 
+// 3. GET /api/categories
 describe("GET /api/categories", () => {
   it("should respond with an array of objects with the properties 'slug' and 'description", () => {
     return request(app)
@@ -26,6 +27,7 @@ describe("GET /api/categories", () => {
   });
 });
 
+// 4. GET /api/reviews
 describe("GET /api/reviews", () => {
   it("should respond with an array of review objects with the correct properties", () => {
     return request(app)
@@ -66,6 +68,7 @@ describe("GET /api/reviews", () => {
   });
 });
 
+// 5. GET /api/reviews/:review_id
 describe("GET /api/reviews/:review_id", () => {
   it("should respond with a single review object", () => {
     const expectedReview = {
@@ -109,6 +112,7 @@ describe("GET /api/reviews/:review_id", () => {
   });
 });
 
+// 6. GET /api/reviews/:review_id/comments
 describe("GET /api/reviews/:review_id/comments", () => {
   it("should respond with an empty array if there are no comments for the given review_id", () => {
     return request(app)
@@ -168,6 +172,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
   });
 });
 
+// 7. POST /api/reviews/:review_id/comments
 describe("POST /api/reviews/:reviewId/comments", () => {
   it("should respond with the posted comment and status code 201", () => {
     const testComment = {
