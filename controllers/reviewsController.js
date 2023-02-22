@@ -1,3 +1,4 @@
+const comments = require("../db/data/test-data/comments");
 const reviewsModel = require("./../models/reviewsModel");
 
 exports.getReviews = (req, res, next) => {
@@ -32,6 +33,20 @@ exports.getCommentsByReviewId = (req, res, next) => {
     .then((comments) => {
       res.status(200).json({
         comments: comments,
+      });
+    })
+    .catch((error) => next(error));
+};
+
+exports.addCommentByReviewId = (req, res, next) => {
+  const { reviewId } = req.params;
+  const { username, body } = req.body;
+
+  reviewsModel
+    .addCommentByReviewId(reviewId, username, body)
+    .then((comment) => {
+      res.status(201).json({
+        comment: comment,
       });
     })
     .catch((error) => next(error));
