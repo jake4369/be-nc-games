@@ -53,3 +53,27 @@ exports.getCommentsByReviewId = (reviewId) => {
       return comments;
     });
 };
+
+exports.addCommentByReviewId = (reviewId, username, body) => {
+  if (!username || !body) {
+    return Promise.reject({
+      status: 400,
+      message: "Author or body is missing",
+    });
+  }
+  return db
+    .query(
+      `
+      INSERT INTO comments
+        (review_id, author, body)
+      VALUES
+        ($1, $2, $3)
+      RETURNING *;
+    `,
+      [reviewId, username, body]
+    )
+    .then((result) => {
+      const comment = result.rows[0];
+      return comment;
+    });
+};
