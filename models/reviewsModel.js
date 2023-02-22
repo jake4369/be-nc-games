@@ -75,5 +75,20 @@ exports.addCommentByReviewId = (reviewId, username, body) => {
     .then((result) => {
       const comment = result.rows[0];
       return comment;
+    })
+    .catch((err) => {
+      if (err.code === "23503" && err.constraint === "comments_author_fkey") {
+        return Promise.reject({
+          status: 400,
+          message: "User not found",
+        });
+      } else if (err.code === "22P02") {
+        return Promise.reject({
+          status: 400,
+          message: "Invalid review ID",
+        });
+      } else {
+        return Promise.reject(err);
+      }
     });
 };

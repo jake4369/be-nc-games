@@ -89,13 +89,13 @@ describe("GET /api/reviews/:review_id", () => {
         expect(review).toMatchObject(expectedReview);
       });
   });
-  it("responds with a 400 status code and an error message when passed a bad review id", () => {
+  it("responds with a 400 status code and an error message when passed a invalid review id", () => {
     return request(app)
       .get("/api/reviews/notAnID")
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid input");
+        expect(message).toBe("Invalid review ID");
       });
   });
   it("should respond with a 404 status code if no review is found", () => {
@@ -142,13 +142,28 @@ describe("GET /api/reviews/:review_id/comments", () => {
       });
   });
 
-  it("responds with a 400 status code and an error message when passed a bad review id", () => {
+  it("responds with a 400 status code and an error message when passed an invalid review id", () => {
     return request(app)
       .get("/api/reviews/notAnID/comments")
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid input");
+        expect(message).toBe("Invalid review ID");
+      });
+  });
+  it("should respond with a 400 status code if given a non-existent review ID", () => {
+    const testComment = {
+      username: "mallionaire",
+      body: "Test review",
+    };
+
+    return request(app)
+      .post(`/api/reviews/1000000/comments`)
+      .send(testComment)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Review not found");
       });
   });
 });
@@ -228,6 +243,36 @@ describe("POST /api/reviews/:reviewId/comments", () => {
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("Author or body is missing");
+      });
+  });
+  it("should respond with a 400 status code if given an invalid review ID", () => {
+    const testComment = {
+      username: "mallionaire",
+      body: "Test review",
+    };
+
+    return request(app)
+      .post(`/api/reviews/monkey/comments`)
+      .send(testComment)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid review ID");
+      });
+  });
+  it("should respond with a 400 status code if given a non-existent username", () => {
+    const testReview = {
+      username: "Test user",
+      body: "Test review",
+    };
+
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .send(testReview)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("User not found");
       });
   });
 });
