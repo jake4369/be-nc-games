@@ -17,14 +17,14 @@ exports.getReviews = () => {
     });
 };
 
-exports.getReview = (review_id) => {
+exports.getReview = (reviewId) => {
   return db
     .query(
       `
       SELECT * FROM reviews
       WHERE review_id = $1
     `,
-      [review_id]
+      [reviewId]
     )
     .then((result) => {
       const review = result.rows[0];
@@ -38,7 +38,7 @@ exports.getReview = (review_id) => {
     });
 };
 
-exports.getCommentsByReviewId = (review_id) => {
+exports.getCommentsByReviewId = (reviewId) => {
   return db
     .query(
       `
@@ -46,7 +46,7 @@ exports.getCommentsByReviewId = (review_id) => {
       WHERE review_id = $1
       ORDER BY comments.created_at DESC;
     `,
-      [review_id]
+      [reviewId]
     )
     .then((results) => {
       const comments = results.rows;

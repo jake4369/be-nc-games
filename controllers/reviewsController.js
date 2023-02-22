@@ -12,10 +12,10 @@ exports.getReviews = (req, res, next) => {
 };
 
 exports.getReview = (req, res, next) => {
-  const { review_id } = req.params;
+  const { reviewId } = req.params;
 
   reviewsModel
-    .getReview(review_id)
+    .getReview(reviewId)
     .then((review) => {
       res.status(200).json({
         review: review,
@@ -25,10 +25,10 @@ exports.getReview = (req, res, next) => {
 };
 
 exports.getCommentsByReviewId = (req, res, next) => {
-  const { review_id } = req.params;
+  const { reviewId } = req.params;
 
   reviewsModel
-    .getCommentsByReviewId(review_id)
+    .getCommentsByReviewId(reviewId)
     .then((comments) => {
       res.status(200).json({
         comments: comments,

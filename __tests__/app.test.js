@@ -153,6 +153,56 @@ describe("GET /api/reviews/:review_id/comments", () => {
   });
 });
 
+describe("POST /api/reviews/:reviewId/comments", () => {
+  it("should respond with the posted comment and status code 201", () => {
+    const testComment = {
+      username: "mallionaire",
+      body: "Test review",
+    };
+
+    return request(app)
+      .post(`/api/reviews/2/comments`)
+      .send(testComment)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment.author).toBe(testComment.username);
+        expect(comment.body).toBe(testComment.body);
+        expect(comment).toHaveProperty("comment_id", expect.any(Number));
+        expect(comment).toHaveProperty("votes", expect.any(Number));
+        expect(comment).toHaveProperty("created_at", expect.any(String));
+      });
+  });
+  it("should respond with a 400 status code if posted without a username", () => {
+    const testComment = {
+      body: "Test review",
+    };
+
+    return request(app)
+      .post(`/api/reviews/2/comments`)
+      .send(testComment)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Author or body is missing");
+      });
+  });
+  it("should respond with a 400 status code if posted without a body", () => {
+    const testComment = {
+      username: "mallionaire",
+    };
+
+    return request(app)
+      .post(`/api/reviews/2/comments`)
+      .send(testComment)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Author or body is missing");
+      });
+  });
+});
+
 describe("400 error on /api/not-path", () => {
   it("status 400 returns error message bad path when provided an invalid path", () => {
     return request(app)
