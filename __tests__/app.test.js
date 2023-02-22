@@ -171,6 +171,15 @@ describe("POST /api/reviews/:reviewId/comments", () => {
         expect(comment).toHaveProperty("comment_id", expect.any(Number));
         expect(comment).toHaveProperty("votes", expect.any(Number));
         expect(comment).toHaveProperty("created_at", expect.any(String));
+      })
+      .then(() => {
+        return request(app)
+          .get("/api/reviews/2/comments")
+          .expect(200)
+          .then(({ body }) => {
+            const { comments } = body;
+            expect(comments.length).toBe(4);
+          });
       });
   });
   it("should respond with a 400 status code if posted without a username", () => {
