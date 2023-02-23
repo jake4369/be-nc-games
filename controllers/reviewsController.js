@@ -12,7 +12,10 @@ exports.getReviews = (req, res, next) => {
     })
     .catch((error) => {
       if (error.status === 400) {
-        res.status(400).send({ message: error.message });
+        return next({
+          status: 400,
+          message: error.message,
+        });
       } else {
         next(error);
       }
