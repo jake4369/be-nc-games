@@ -164,7 +164,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
     return request(app)
       .post(`/api/reviews/1000000/comments`)
       .send(testComment)
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("Review not found");
@@ -278,6 +278,21 @@ describe("POST /api/reviews/:reviewId/comments", () => {
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("User not found");
+      });
+  });
+  it("should respond with a 404 status code if given a non-existent review ID", () => {
+    const testComment = {
+      username: "mallionaire",
+      body: "Test review",
+    };
+
+    return request(app)
+      .post("/api/reviews/7777777/comments")
+      .send(testComment)
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Review not found");
       });
   });
 });
