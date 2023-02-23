@@ -56,6 +56,13 @@ exports.updateReview = (req, res, next) => {
   const { reviewId } = req.params;
   const { inc_votes } = req.body;
 
+  if (inc_votes && typeof inc_votes !== "number") {
+    return next({
+      status: 400,
+      message: "Invalid data type for inc_votes",
+    });
+  }
+
   reviewsModel
     .updateReview(reviewId, inc_votes)
     .then((review) => {
