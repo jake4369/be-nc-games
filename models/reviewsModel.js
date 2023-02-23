@@ -1,20 +1,62 @@
 const db = require("./../db/connection");
 
-exports.getReviews = () => {
-  return db
-    .query(
-      `
-        SELECT reviews.*, CAST(COUNT(body) AS INT) AS comment_count 
-        FROM reviews
-        LEFT JOIN comments ON comments.review_id = reviews.review_id
-        GROUP BY reviews.review_id
-        ORDER BY reviews.created_at DESC
-    `
-    )
-    .then((results) => {
-      const reviews = results.rows;
-      return reviews;
+exports.getReviews = (
+  sort_by = "created_at",
+  order = "desc",
+  category = null
+) => {
+  const allowedColumns = [
+    "review_id",
+    "title",
+    "category",
+    "designer",
+    "owner",
+    "review_body",
+    "review_img_url",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+  const allowedOrders = ["asc", "desc"];
+
+  if (!allowedColumns.includes(sort_by) && !allowedOrders.includes(order)) {
+    return Promise.reject({
+      status: 400,
+      message: "Invalid query, please check sort_by and order is correct",
     });
+  } else if (!allowedColumns.includes(sort_by)) {
+    return Promise.reject({ status: 404, message: "Property does not exist" });
+  } else if (!allowedOrders.includes(order)) {
+    return Promise.reject({ status: 400, message: "Invalid order query" });
+  }
+
+  const queryValues = [];
+  let queryStr = `
+    SELECT reviews.*, CAST(COUNT(body) AS INT) AS comment_count 
+    FROM reviews
+    LEFT JOIN comments ON comments.review_id = reviews.review_id
+  `;
+
+  if (category) {
+    queryStr += ` WHERE category ILIKE $1`;
+    queryValues.push(`%${category}%`);
+  }
+
+  queryStr += `
+    GROUP BY reviews.review_id
+    ORDER BY ${sort_by} ${order}
+  `;
+
+  return db.query(queryStr, queryValues).then((results) => {
+    const reviews = results.rows;
+    if (category && reviews.length === 0) {
+      return [];
+    } else if (reviews.length === 0) {
+      return Promise.reject({ status: 404, message: "Not found" });
+    } else {
+      return reviews;
+    }
+  });
 };
 
 exports.getReview = (reviewId) => {
