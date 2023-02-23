@@ -155,7 +155,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
         expect(message).toBe("Invalid review ID");
       });
   });
-  it("should respond with a 400 status code if given a non-existent review ID", () => {
+  it("should respond with a 404 status code if given a non-existent review ID", () => {
     const testComment = {
       username: "mallionaire",
       body: "Test review",
