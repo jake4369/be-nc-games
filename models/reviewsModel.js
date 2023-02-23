@@ -48,10 +48,12 @@ exports.getReviews = (
   `;
 
   return db.query(queryStr, queryValues).then((results) => {
-    if (results.rowCount === 0) {
+    const reviews = results.rows;
+    if (category && reviews.length === 0) {
+      return [];
+    } else if (reviews.length === 0) {
       return Promise.reject({ status: 404, message: "Not found" });
     } else {
-      const reviews = results.rows;
       return reviews;
     }
   });
