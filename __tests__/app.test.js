@@ -3,6 +3,7 @@ const db = require("./../db/connection");
 const data = require("./../db/data/test-data");
 const seed = require("./../db/seeds/seed");
 const app = require("./../app");
+require("jest-sorted");
 
 beforeEach(() => {
   return seed(data);
@@ -60,10 +61,7 @@ describe("GET /api/reviews", () => {
       .expect(200)
       .then(({ body }) => {
         const { reviews } = body;
-        const sortedReviews = [...reviews].sort((reviewA, reviewB) => {
-          return reviewA - reviewB;
-        });
-        expect(reviews).toEqual(sortedReviews);
+        expect(reviews).toBeSorted({ descending: true });
       });
   });
 });
