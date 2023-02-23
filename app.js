@@ -23,6 +23,8 @@ app.post(
   reviewsController.addCommentByReviewId
 );
 
+app.patch("/api/reviews/:reviewId", reviewsController.updateReview);
+
 app.all("*", (req, res) => {
   res.status(400).send({ message: "Path not found!" });
 });
