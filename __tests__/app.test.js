@@ -514,6 +514,35 @@ describe("/api/reviews/?query returns correct data in correct order", () => {
         expect(sortedReviews).toEqual(reviews);
       });
   });
+  it("should respond with a 404 status code when given an invalid sort query where property does not exist", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=invalid")
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Property does not exist");
+      });
+  });
+  it("should respond with a 400 status code when given an invalid order query", () => {
+    return request(app)
+      .get("/api/reviews?order=invalid")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid order query");
+      });
+  });
+  it("should respond with a 400 status code if sort_by and order are incorrect", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=invalid&order=invalid")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe(
+          "Invalid query, please check sort_by and order is correct"
+        );
+      });
+  });
 });
 
 describe("400 error on /api/not-path", () => {
