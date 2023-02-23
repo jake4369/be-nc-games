@@ -323,6 +323,30 @@ describe("PATCH /api/reviews/:review_id", () => {
         expect(review.votes).toBe(0);
       });
   });
+  it("responds with a 400 status code when passed an invalid request body", () => {
+    const testUpdate = { wrong_key: 100 };
+
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(testUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid patch body");
+      });
+  });
+  it("should respond with a 400 status code if given an incorrect data type", () => {
+    const testUpdate = { inc_votes: "not_a_number" };
+
+    return request(app)
+      .patch(`/api/reviews/2`)
+      .send(testUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid data type for inc_votes");
+      });
+  });
   it("responds with a 400 status code and an error message when passed an invalid review id", () => {
     const testUpdate = { inc_votes: 1 };
 
