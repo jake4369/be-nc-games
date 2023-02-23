@@ -2,14 +2,21 @@ const comments = require("../db/data/test-data/comments");
 const reviewsModel = require("./../models/reviewsModel");
 
 exports.getReviews = (req, res, next) => {
+  const sort_by = req.query.sort_by || "created_at";
+  const order = req.query.order || "desc";
+  const category = req.query.category || null;
   reviewsModel
-    .getReviews()
+    .getReviews(sort_by, order, category)
     .then((reviews) => {
-      res.status(200).json({
-        reviews: reviews,
-      });
+      res.status(200).json({ reviews: reviews });
     })
-    .catch((error) => next(error));
+    .catch((error) => {
+      if (error.status === 400) {
+        res.status(400).send({ message: error.message });
+      } else {
+        next(error);
+      }
+    });
 };
 
 exports.getReview = (req, res, next) => {
