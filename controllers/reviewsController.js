@@ -11,14 +11,7 @@ exports.getReviews = (req, res, next) => {
       res.status(200).json({ reviews: reviews });
     })
     .catch((error) => {
-      if (error.status === 400) {
-        return next({
-          status: 400,
-          message: error.message,
-        });
-      } else {
-        next(error);
-      }
+      next(error);
     });
 };
 
