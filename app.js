@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 
+app.use(express.json());
+
 const categoriesController = require("./controllers/categoriesController");
 const reviewsController = require("./controllers/reviewsController");
 const errorHandlingController = require("./controllers/errorHandlingController");
@@ -9,11 +11,16 @@ app.get("/api/categories", categoriesController.getCategories);
 
 app.get("/api/reviews", reviewsController.getReviews);
 
-app.get("/api/reviews/:review_id", reviewsController.getReview);
+app.get("/api/reviews/:reviewId", reviewsController.getReview);
 
 app.get(
-  "/api/reviews/:review_id/comments",
+  "/api/reviews/:reviewId/comments",
   reviewsController.getCommentsByReviewId
+);
+
+app.post(
+  "/api/reviews/:reviewId/comments",
+  reviewsController.addCommentByReviewId
 );
 
 app.all("*", (req, res) => {
