@@ -332,7 +332,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid patch body");
+        expect(message).toBe("Invalid key in patch body");
       });
   });
   it("should respond with a 400 status code if given an incorrect data type", () => {
