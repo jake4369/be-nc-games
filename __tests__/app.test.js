@@ -405,6 +405,16 @@ describe("/api/reviews/?query returns correct data in correct order", () => {
         );
       });
   });
+  it("returns an empty array if category query is valid, but has no corresponding reviews", () => {
+    return request(app)
+      .get("/api/reviews?category=euro%20games")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).toBe(0);
+        expect(reviews).toEqual([]);
+      });
+  });
   it("should respond with an array of review objects with the correct properties if query is omitted", () => {
     return request(app)
       .get("/api/reviews")
