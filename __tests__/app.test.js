@@ -60,9 +60,9 @@ describe("GET /api/reviews", () => {
       .expect(200)
       .then(({ body }) => {
         const { reviews } = body;
-        const sortedReviews = [...reviews].sort((a, b) =>
-          a.created_at > b.created_at ? -1 : 1
-        );
+        const sortedReviews = [...reviews].sort((reviewA, reviewB) => {
+          return reviewA - reviewB;
+        });
         expect(reviews).toEqual(sortedReviews);
       });
   });
@@ -387,6 +387,131 @@ describe("GET /api/users", () => {
           expect(user).toHaveProperty("name", expect.any(String));
           expect(user).toHaveProperty("avatar_url", expect.any(String));
         });
+      });
+  });
+});
+
+// 10. GET /api/reviews (queries)
+describe("/api/reviews/?query returns correct data in correct order", () => {
+  it("returns an array of reviews only containing on the specified category", () => {
+    return request(app)
+      .get("/api/reviews?category=social%20deduction")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).toBe(11);
+        reviews.forEach((review) =>
+          expect(review.category).toBe("social deduction")
+        );
+      });
+  });
+  it("should respond with an array of review objects with the correct properties if query is omitted", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).toBe(13);
+        reviews.forEach((review) => {
+          expect(review).toHaveProperty("owner", expect.any(String));
+          expect(review).toHaveProperty("title", expect.any(String));
+          expect(review).toHaveProperty("review_id", expect.any(Number));
+          expect(review).toHaveProperty("category", expect.any(String));
+          expect(review).toHaveProperty("review_img_url", expect.any(String));
+          expect(review).toHaveProperty("created_at", expect.any(String));
+          expect(review).toHaveProperty("votes", expect.any(Number));
+          expect(review).toHaveProperty("designer", expect.any(String));
+          expect(review).toHaveProperty("comment_count", expect.any(Number));
+
+          const matchingReview = [...reviews].find(
+            (testReview) => testReview.review_id === review.review_id
+          );
+          expect(review.comment_count).toBe(matchingReview.comment_count);
+        });
+      });
+  });
+  it("sort_by should return an array of results in ascending order, default sorted by 'created_by'", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).toBe(13);
+        const reviewsCopy = [...reviews];
+        const sortedReviews = reviewsCopy.sort((reviewA, reviewB) => {
+          return reviewA.created_at - reviewB.created_at;
+        });
+        expect(reviews).toEqual(sortedReviews);
+      });
+  });
+  it("sort_by=title should return an array of results sorted by title descending order", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=title")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).toBe(13);
+        const reviewsCopy = [...reviews];
+        const sortedReviews = reviewsCopy.sort((reviewA, reviewB) => {
+          return reviewB.title - reviewA.title;
+        });
+        expect(reviews).toEqual(sortedReviews);
+      });
+  });
+  it("sort_by=votes should return an array of results sorted by votes descending order", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=votes")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).toBe(13);
+        const reviewsCopy = [...reviews];
+        const sortedReviews = reviewsCopy.sort((reviewA, reviewB) => {
+          return reviewB.votes - reviewA.votes;
+        });
+        expect(reviews).toEqual(sortedReviews);
+      });
+  });
+  it("returns reviews with order query in descending order by default", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=votes&order")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        const reviewCopy = [...reviews];
+        expect(reviews).toHaveLength(13);
+        const sortedReviews = reviewCopy.sort((reviewA, reviewB) => {
+          return reviewB.votes - reviewA.votes;
+        });
+        expect(sortedReviews).toEqual(reviews);
+      });
+  });
+  it("returns reviews sorted by owner in ascending order", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=owner&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        const reviewCopy = [...reviews];
+        expect(reviews).toHaveLength(13);
+        const sortedReviews = reviewCopy.sort((reviewA, reviewB) => {
+          return reviewA.owner - reviewB.owner;
+        });
+        expect(sortedReviews).toEqual(reviews);
+      });
+  });
+  it("returns reviews sorted by votes in descending order", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=votes&order=desc")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        const reviewCopy = [...reviews];
+        expect(reviews).toHaveLength(13);
+        const sortedReviews = reviewCopy.sort((reviewA, reviewB) => {
+          return reviewB.votes - reviewA.votes;
+        });
+        expect(sortedReviews).toEqual(reviews);
       });
   });
 });
