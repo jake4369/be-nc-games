@@ -19,11 +19,14 @@ exports.getReviews = (
   ];
   const allowedOrders = ["asc", "desc"];
 
-  if (!allowedColumns.includes(sort_by)) {
-    return Promise.reject({ status: 400, message: "Invalid sort query" });
-  }
-
-  if (!allowedOrders.includes(order)) {
+  if (!allowedColumns.includes(sort_by) && !allowedOrders.includes(order)) {
+    return Promise.reject({
+      status: 400,
+      message: "Invalid query, please check sort_by and order is correct",
+    });
+  } else if (!allowedColumns.includes(sort_by)) {
+    return Promise.reject({ status: 404, message: "Property does not exist" });
+  } else if (!allowedOrders.includes(order)) {
     return Promise.reject({ status: 400, message: "Invalid order query" });
   }
 
