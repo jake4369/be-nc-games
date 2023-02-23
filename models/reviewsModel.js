@@ -95,3 +95,27 @@ exports.addCommentByReviewId = (reviewId, username, body) => {
       }
     });
 };
+
+exports.updateReview = (reviewID, inc_votes) => {
+  return db
+    .query(
+      `
+      UPDATE reviews
+      SET
+        votes = votes + $1
+      WHERE review_id = $2
+      RETURNING *;
+    `,
+      [inc_votes, reviewID]
+    )
+    .then((result) => {
+      if (result.rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          message: `Review not found`,
+        });
+      }
+      const review = result.rows[0];
+      return review;
+    });
+};

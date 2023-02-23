@@ -51,3 +51,17 @@ exports.addCommentByReviewId = (req, res, next) => {
     })
     .catch((error) => next(error));
 };
+
+exports.updateReview = (req, res, next) => {
+  const { reviewId } = req.params;
+  const { inc_votes } = req.body;
+
+  reviewsModel
+    .updateReview(reviewId, inc_votes)
+    .then((review) => {
+      res.status(200).json({
+        review: review,
+      });
+    })
+    .catch((error) => next(error));
+};

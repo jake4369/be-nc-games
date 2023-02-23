@@ -297,6 +297,58 @@ describe("POST /api/reviews/:reviewId/comments", () => {
   });
 });
 
+// 8. PATCH /api/reviews/:review_id
+describe("PATCH /api/reviews/:review_id", () => {
+  it("should respond with the updated review, with votes incremented and a 200 status code", () => {
+    const testUpdate = { inc_votes: 100 };
+
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(testUpdate)
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review.votes).toBe(101);
+      });
+  });
+  it("should respond with the updated review, with votes decremented and a 200 status code", () => {
+    const testUpdate = { inc_votes: -1 };
+
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(testUpdate)
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review.votes).toBe(0);
+      });
+  });
+  it("responds with a 400 status code and an error message when passed an invalid review id", () => {
+    const testUpdate = { inc_votes: 1 };
+
+    return request(app)
+      .patch("/api/reviews/banana")
+      .send(testUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid review ID");
+      });
+  });
+  it("should respond with a 404 status code if given the ID of a non-existent review", () => {
+    const testUpdate = { inc_votes: 1 };
+
+    return request(app)
+      .patch("/api/reviews/1000")
+      .send(testUpdate)
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Review not found");
+      });
+  });
+});
+
 describe("400 error on /api/not-path", () => {
   it("status 400 returns error message bad path when provided an invalid path", () => {
     return request(app)
