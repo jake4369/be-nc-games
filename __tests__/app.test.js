@@ -429,6 +429,7 @@ describe("/api/reviews/?query returns correct data in correct order", () => {
           expect(review).toHaveProperty("created_at", expect.any(String));
           expect(review).toHaveProperty("votes", expect.any(Number));
           expect(review).toHaveProperty("designer", expect.any(String));
+          expect(review).toHaveProperty("comment_count", expect.any(Number));
 
           const matchingReview = [...reviews].find(
             (testReview) => testReview.review_id === review.review_id
@@ -555,20 +556,25 @@ describe("/api/reviews/?query returns correct data in correct order", () => {
 // 11. GET /api/reviews/:review_id (comment count)
 describe("GET /api/reviews/:review_id", () => {
   it("should respond with a single review object", () => {
+    const expectedReview = {
+      review_id: expect.any(Number),
+      title: expect.any(String),
+      designer: expect.any(String),
+      owner: expect.any(String),
+      review_img_url: expect.any(String),
+      review_body: expect.any(String),
+      category: expect.any(String),
+      created_at: expect.any(String),
+      votes: expect.any(Number),
+      comment_count: expect.any(Number),
+    };
+
     return request(app)
       .get("/api/reviews/1")
       .expect(200)
       .then(({ body }) => {
         const { review } = body;
-        expect(review).toHaveProperty("owner", expect.any(String));
-        expect(review).toHaveProperty("title", expect.any(String));
-        expect(review).toHaveProperty("review_id", expect.any(Number));
-        expect(review).toHaveProperty("category", expect.any(String));
-        expect(review).toHaveProperty("review_img_url", expect.any(String));
-        expect(review).toHaveProperty("created_at", expect.any(String));
-        expect(review).toHaveProperty("votes", expect.any(Number));
-        expect(review).toHaveProperty("designer", expect.any(String));
-        expect(review).toHaveProperty("comment_count", expect.any(Number));
+        expect(review).toMatchObject(expectedReview);
       });
   });
   it("responds with a 400 status code and an error message when passed a invalid review id", () => {
