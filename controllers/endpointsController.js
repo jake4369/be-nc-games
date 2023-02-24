@@ -5,7 +5,7 @@ exports.getEndpoints = (req, res, next) => {
     .getEndpoints()
     .then((endpoints) => {
       res.status(200).json({
-        enpoints: endpoints,
+        endpoints: endpoints,
       });
     })
     .catch((error) => {
