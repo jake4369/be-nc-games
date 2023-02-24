@@ -557,7 +557,7 @@ describe("/api/reviews/?query returns correct data in correct order", () => {
 describe("GET /api/reviews/:review_id", () => {
   it("should respond with a single review object", () => {
     const expectedReview = {
-      review_id: expect.any(Number),
+      review_id: 1,
       title: expect.any(String),
       designer: expect.any(String),
       owner: expect.any(String),
