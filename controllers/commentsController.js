@@ -6,7 +6,7 @@ exports.deleteComment = (req, res, next) => {
   commentsModel
     .deleteComment(commentId)
     .then(() => {
-      res.status(204).json({ message: undefined });
+      res.status(204).send();
     })
     .catch((error) => next(error));
 };
