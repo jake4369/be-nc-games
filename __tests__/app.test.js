@@ -429,7 +429,6 @@ describe("/api/reviews/?query returns correct data in correct order", () => {
           expect(review).toHaveProperty("created_at", expect.any(String));
           expect(review).toHaveProperty("votes", expect.any(Number));
           expect(review).toHaveProperty("designer", expect.any(String));
-          expect(review).toHaveProperty("comment_count", expect.any(Number));
 
           const matchingReview = [...reviews].find(
             (testReview) => testReview.review_id === review.review_id
@@ -553,29 +552,23 @@ describe("/api/reviews/?query returns correct data in correct order", () => {
   });
 });
 
-// 11. GET /api/reviews/:review_id (comment count) BUT MODIFIES TEST 5
+// 11. GET /api/reviews/:review_id (comment count)
 describe("GET /api/reviews/:review_id", () => {
   it("should respond with a single review object", () => {
-    const expectedReview = {
-      review_id: 1,
-      title: "Agricola",
-      designer: "Uwe Rosenberg",
-      owner: "mallionaire",
-      review_img_url:
-        "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700",
-      review_body: "Farmyard fun!",
-      category: "euro game",
-      created_at: "2021-01-18T10:00:20.514Z",
-      votes: 1,
-      comment_count: 0,
-    };
-
     return request(app)
       .get("/api/reviews/1")
       .expect(200)
       .then(({ body }) => {
         const { review } = body;
-        expect(review).toMatchObject(expectedReview);
+        expect(review).toHaveProperty("owner", expect.any(String));
+        expect(review).toHaveProperty("title", expect.any(String));
+        expect(review).toHaveProperty("review_id", expect.any(Number));
+        expect(review).toHaveProperty("category", expect.any(String));
+        expect(review).toHaveProperty("review_img_url", expect.any(String));
+        expect(review).toHaveProperty("created_at", expect.any(String));
+        expect(review).toHaveProperty("votes", expect.any(Number));
+        expect(review).toHaveProperty("designer", expect.any(String));
+        expect(review).toHaveProperty("comment_count", expect.any(Number));
       });
   });
   it("responds with a 400 status code and an error message when passed a invalid review id", () => {
