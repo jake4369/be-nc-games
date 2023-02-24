@@ -2,13 +2,15 @@
   "name": "be-nc-games",
   "version": "1.0.0",
   "description": "bc-nc-games",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "env-cmd -f .env.development node ./db/seeds/run-seed.js",
     "test": "env-cmd -f .env.test node ./db/seeds/run-seed.js && jest",
     "prepare": "husky install",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "seed-prod": "NODE_ENV=production npm run seed"
   },
   "repository": {
     "type": "git",
