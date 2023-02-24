@@ -95,7 +95,7 @@ describe("GET /api/reviews/:review_id", () => {
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid review ID");
+        expect(message).toBe("Bad request");
       });
   });
   it("should respond with a 404 status code if no review is found", () => {
@@ -149,7 +149,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid review ID");
+        expect(message).toBe("Bad request");
       });
   });
   it("should respond with a 404 status code if given a non-existent review ID", () => {
@@ -259,7 +259,7 @@ describe("POST /api/reviews/:reviewId/comments", () => {
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid review ID");
+        expect(message).toBe("Bad request");
       });
   });
   it("should respond with a 400 status code if given a non-existent username", () => {
@@ -353,7 +353,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid review ID");
+        expect(message).toBe("Bad request");
       });
   });
   it("should respond with a 404 status code if given the ID of a non-existent review", () => {
@@ -576,13 +576,13 @@ describe("GET /api/reviews/:review_id", () => {
         expect(review).toMatchObject(expectedReview);
       });
   });
-  it("responds with a 400 status code and an error message when passed a invalid review id", () => {
+  it("", () => {
     return request(app)
       .get("/api/reviews/notAnID")
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid review ID");
+        expect(message).toBe("Bad request");
       });
   });
   it("should respond with a 404 status code if no review is found", () => {
@@ -592,6 +592,38 @@ describe("GET /api/reviews/:review_id", () => {
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("Review not found");
+      });
+  });
+});
+
+// 12. DELETE /api/comments/:comment_id
+describe("DELETE /api/comments/:comment_id", () => {
+  it("should respond with a 204 status code", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBeUndefined();
+      });
+  });
+  it("should respond with a 404 status code if comment does not exist", () => {
+    return request(app)
+      .delete("/api/comments/10000")
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Comment not found");
+      });
+  });
+
+  it("should respond with a 400 status code if comment ID is not a number", () => {
+    return request(app)
+      .delete("/api/comments/invalid-id")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Bad request");
       });
   });
 });
