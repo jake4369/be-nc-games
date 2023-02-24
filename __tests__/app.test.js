@@ -4,6 +4,7 @@ const data = require("./../db/data/test-data");
 const seed = require("./../db/seeds/seed");
 const app = require("./../app");
 require("jest-sorted");
+const fs = require("fs/promises");
 
 beforeEach(() => {
   return seed(data);
@@ -629,6 +630,26 @@ describe("DELETE /api/comments/:comment_id", () => {
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("Bad request");
+      });
+  });
+});
+
+describe("GET /api/endpoints", () => {
+  it("should respond with the correct JSON file", () => {
+    return request(app)
+      .get("/api/endpoints")
+      .expect(200)
+      .then(({ body }) => {
+        const { endpoints } = body;
+        expect(typeof endpoints).toBe("object");
+        Object.values(endpoints).forEach((endpoint) => {
+          expect(endpoint).toHaveProperty("description", expect.any(String));
+          expect(endpoint).toHaveProperty("queries"), expect.any(Object);
+          expect(endpoint).toHaveProperty(
+            "exampleResponse",
+            expect.any(Object)
+          );
+        });
       });
   });
 });
