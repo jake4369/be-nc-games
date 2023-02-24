@@ -598,13 +598,22 @@ describe("GET /api/reviews/:review_id", () => {
 
 // 12. DELETE /api/comments/:comment_id
 describe("DELETE /api/comments/:comment_id", () => {
-  it("should respond with a 204 status code", () => {
+  it("should respond with a 204 status code and number of comments found by review_id should be one less", () => {
     return request(app)
       .delete("/api/comments/1")
       .expect(204)
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBeUndefined();
+      })
+      .then(() => {
+        return request(app)
+          .get("/api/reviews/2/comments")
+          .expect(200)
+          .then(({ body }) => {
+            const { comments } = body;
+            expect(comments.length).toBe(2);
+          });
       });
   });
   it("should respond with a 404 status code if comment does not exist", () => {
