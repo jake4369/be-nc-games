@@ -6,7 +6,7 @@ exports.handleCustomErrors = (err, req, res, next) => {
 
 exports.handlePsqlErrors = (err, req, res, next) => {
   if (err.code === "22P02") {
-    res.status(400).send({ message: "Invalid review ID" });
+    res.status(400).send({ message: "Bad request" });
   } else if (err.code === "23502") {
     res.status(400).send({ message: "Invalid key in patch body" });
   } else if (err.code === "23503") {
