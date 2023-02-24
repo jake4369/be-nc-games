@@ -30,5 +30,78 @@
         }
       ]
     }
+  },
+  "GET /api/reviews/:reviewId/comments": {
+    "description": "servers an array of comments for a specific review",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 59,
+          "body": "Quis duis mollit ad enim deserunt.",
+          "review_id": 1,
+          "author": "jessjelly",
+          "votes": 3,
+          "created_at": "2021-03-27T19:48:58.110Z"
+        }
+      ]
+    }
+  },
+  "POST /api/reviews/:reviewId/comments": {
+    "description": "adds a comment for a specific review",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 62,
+        "body": "This is a test comment",
+        "review_id": 1,
+        "author": "jessjelly",
+        "votes": 0,
+        "created_at": "2023-02-24T10:49:44.996Z"
+      }
+    }
+  },
+  "PATCH /api/reviews/:reviewId": {
+    "description": "increments or decrements the number of votes on a review",
+    "queries": [],
+    "exampleResponse": {
+      "review": {
+        "review_id": 1,
+        "title": "Culture a Love of Agriculture With Agricola",
+        "category": "strategy",
+        "designer": "Uwe Rosenberg",
+        "owner": "tickle122",
+        "review_body": "You could sum up Agricola with the simple phrase 'Farmyard Fun' but the mechanics and game play add so much more than that. You'll find yourself torn between breeding pigs, or sowing crops. Its joyeous and rewarding and it makes you think of time spent outside, which is much harder to do these days!",
+        "review_img_url": "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700",
+        "created_at": "2021-01-18T10:00:20.514Z",
+        "votes": 2
+      }
+    }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all reviews",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "tickle122",
+          "name": "Tom Tickle",
+          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+        },
+        {
+          "username": "grumpy19",
+          "name": "Paul Grump",
+          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/78/Mr-Grumpy-3A.PNG/revision/latest?cb=20170707233013"
+        }
+      ]
+    }
+  },
+  "DELETE /api/comments/:commentId": {
+    "description": "deletes a specific comment",
+    "queries": [],
+    "exampleResponse": {
+      "status": 204,
+      "content": "no content"
+    }
   }
 }
