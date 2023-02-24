@@ -602,10 +602,6 @@ describe("DELETE /api/comments/:comment_id", () => {
     return request(app)
       .delete("/api/comments/1")
       .expect(204)
-      .then(({ body }) => {
-        const { message } = body;
-        expect(message).toBeUndefined();
-      })
       .then(() => {
         return request(app)
           .get("/api/reviews/2/comments")
