@@ -634,10 +634,10 @@ describe("DELETE /api/comments/:comment_id", () => {
   });
 });
 
-describe("GET /api/endpoints", () => {
+describe("GET /api", () => {
   it("should respond with the correct JSON file", () => {
     return request(app)
-      .get("/api/endpoints")
+      .get("/api")
       .expect(200)
       .then(({ body }) => {
         const { endpoints } = body;
