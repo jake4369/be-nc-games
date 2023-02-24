@@ -553,6 +553,50 @@ describe("/api/reviews/?query returns correct data in correct order", () => {
   });
 });
 
+// 11. GET /api/reviews/:review_id (comment count)
+describe("GET /api/reviews/:review_id", () => {
+  it("should respond with a single review object", () => {
+    const expectedReview = {
+      review_id: 1,
+      title: expect.any(String),
+      designer: expect.any(String),
+      owner: expect.any(String),
+      review_img_url: expect.any(String),
+      review_body: expect.any(String),
+      category: expect.any(String),
+      created_at: expect.any(String),
+      votes: expect.any(Number),
+      comment_count: expect.any(Number),
+    };
+
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject(expectedReview);
+      });
+  });
+  it("responds with a 400 status code and an error message when passed a invalid review id", () => {
+    return request(app)
+      .get("/api/reviews/notAnID")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid review ID");
+      });
+  });
+  it("should respond with a 404 status code if no review is found", () => {
+    return request(app)
+      .get("/api/reviews/100")
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Review not found");
+      });
+  });
+});
+
 describe("400 error on /api/not-path", () => {
   it("status 400 returns error message bad path when provided an invalid path", () => {
     return request(app)
