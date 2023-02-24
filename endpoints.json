@@ -1,6 +1,26 @@
 {
   "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
+    "description": "serves up a json representation of all the available endpoints of the api",
+    "queries": [],
+    "exampleResponse": {
+      "endpoints": {
+        "GET /api": {
+          "description": "serves up a json representation of all the available endpoints of the api"
+        },
+        "GET /api/categories": {
+          "description": "serves an array of all categories",
+          "queries": [],
+          "exampleResponse": {
+            "categories": [
+              {
+                "description": "Players attempt to uncover each other's hidden role",
+                "slug": "Social deduction"
+              }
+            ]
+          }
+        }
+      }
+    }
   },
   "GET /api/categories": {
     "description": "serves an array of all categories",
