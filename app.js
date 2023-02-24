@@ -5,6 +5,7 @@ app.use(express.json());
 
 const categoriesController = require("./controllers/categoriesController");
 const commentsController = require("./controllers/commentsController");
+const endpointsController = require("./controllers/endpointsController");
 const reviewsController = require("./controllers/reviewsController");
 const usersController = require("./controllers/usersController");
 
@@ -29,6 +30,8 @@ app.post(
 app.patch("/api/reviews/:reviewId", reviewsController.updateReview);
 
 app.get("/api/users", usersController.getUsers);
+
+app.get("/api/endpoints", endpointsController.getEndpoints);
 
 app.delete("/api/comments/:commentId", commentsController.deleteComment);
 
