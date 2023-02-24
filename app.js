@@ -31,9 +31,9 @@ app.patch("/api/reviews/:reviewId", reviewsController.updateReview);
 
 app.get("/api/users", usersController.getUsers);
 
-app.get("/api/endpoints", endpointsController.getEndpoints);
-
 app.delete("/api/comments/:commentId", commentsController.deleteComment);
+
+app.get("/api", endpointsController.getEndpoints);
 
 app.all("*", (req, res) => {
   res.status(400).send({ message: "Path not found!" });
