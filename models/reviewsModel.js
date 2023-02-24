@@ -130,11 +130,6 @@ exports.addCommentByReviewId = (reviewId, username, body) => {
           status: 400,
           message: "User not found",
         });
-      } else if (error.code === "22P02") {
-        return Promise.reject({
-          status: 400,
-          message: "Invalid review ID",
-        });
       } else {
         return Promise.reject(error);
       }

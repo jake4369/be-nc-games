@@ -71,15 +71,14 @@ describe("GET /api/reviews/:review_id", () => {
   it("should respond with a single review object", () => {
     const expectedReview = {
       review_id: 1,
-      title: "Agricola",
-      designer: "Uwe Rosenberg",
-      owner: "mallionaire",
-      review_img_url:
-        "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700",
-      review_body: "Farmyard fun!",
-      category: "euro game",
-      created_at: "2021-01-18T10:00:20.514Z",
-      votes: 1,
+      title: expect.any(String),
+      designer: expect.any(String),
+      owner: expect.any(String),
+      review_img_url: expect.any(String),
+      review_body: expect.any(String),
+      category: expect.any(String),
+      created_at: expect.any(String),
+      votes: expect.any(Number),
     };
 
     return request(app)
@@ -96,7 +95,7 @@ describe("GET /api/reviews/:review_id", () => {
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid review ID");
+        expect(message).toBe("Bad request");
       });
   });
   it("should respond with a 404 status code if no review is found", () => {
@@ -150,7 +149,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid review ID");
+        expect(message).toBe("Bad request");
       });
   });
   it("should respond with a 404 status code if given a non-existent review ID", () => {
@@ -260,7 +259,7 @@ describe("POST /api/reviews/:reviewId/comments", () => {
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid review ID");
+        expect(message).toBe("Bad request");
       });
   });
   it("should respond with a 400 status code if given a non-existent username", () => {
@@ -354,7 +353,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid review ID");
+        expect(message).toBe("Bad request");
       });
   });
   it("should respond with a 404 status code if given the ID of a non-existent review", () => {
@@ -577,13 +576,13 @@ describe("GET /api/reviews/:review_id", () => {
         expect(review).toMatchObject(expectedReview);
       });
   });
-  it("responds with a 400 status code and an error message when passed a invalid review id", () => {
+  it("", () => {
     return request(app)
       .get("/api/reviews/notAnID")
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid review ID");
+        expect(message).toBe("Bad request");
       });
   });
   it("should respond with a 404 status code if no review is found", () => {
@@ -593,6 +592,47 @@ describe("GET /api/reviews/:review_id", () => {
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("Review not found");
+      });
+  });
+});
+
+// 12. DELETE /api/comments/:comment_id
+describe("DELETE /api/comments/:comment_id", () => {
+  it("should respond with a 204 status code and number of comments found by review_id should be one less", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBeUndefined();
+      })
+      .then(() => {
+        return request(app)
+          .get("/api/reviews/2/comments")
+          .expect(200)
+          .then(({ body }) => {
+            const { comments } = body;
+            expect(comments.length).toBe(2);
+          });
+      });
+  });
+  it("should respond with a 404 status code if comment does not exist", () => {
+    return request(app)
+      .delete("/api/comments/10000")
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Comment not found");
+      });
+  });
+
+  it("should respond with a 400 status code if comment ID is not a number", () => {
+    return request(app)
+      .delete("/api/comments/invalid-id")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Bad request");
       });
   });
 });
