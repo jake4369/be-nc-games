@@ -298,7 +298,7 @@ describe("POST /api/reviews/:reviewId/comments", () => {
 // 8. PATCH /api/reviews/:review_id
 describe("PATCH /api/reviews/:review_id", () => {
   it("should respond with the updated review, with votes incremented and a 200 status code", () => {
-    const testUpdate = { inc_votes: 100 };
+    const testUpdate = { incVotes: 100 };
 
     return request(app)
       .patch("/api/reviews/1")
@@ -310,7 +310,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       });
   });
   it("should respond with the updated review, with votes decremented and a 200 status code", () => {
-    const testUpdate = { inc_votes: -1 };
+    const testUpdate = { incVotes: -1 };
 
     return request(app)
       .patch("/api/reviews/1")
@@ -334,7 +334,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       });
   });
   it("should respond with a 400 status code if given an incorrect data type", () => {
-    const testUpdate = { inc_votes: "not_a_number" };
+    const testUpdate = { incVotes: "not_a_number" };
 
     return request(app)
       .patch(`/api/reviews/2`)
@@ -342,11 +342,11 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid data type for inc_votes");
+        expect(message).toBe("Bad request");
       });
   });
   it("responds with a 400 status code and an error message when passed an invalid review id", () => {
-    const testUpdate = { inc_votes: 1 };
+    const testUpdate = { incVotes: 1 };
 
     return request(app)
       .patch("/api/reviews/banana")
@@ -358,7 +358,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       });
   });
   it("should respond with a 404 status code if given the ID of a non-existent review", () => {
-    const testUpdate = { inc_votes: 1 };
+    const testUpdate = { incVotes: 1 };
 
     return request(app)
       .patch("/api/reviews/1000")
@@ -667,7 +667,6 @@ describe("GET /api/users/:username", () => {
       .expect(200)
       .then(({ body }) => {
         const { user } = body;
-        console.log(user);
         expect(user).toEqual(expectedResult);
       });
   });
@@ -678,6 +677,82 @@ describe("GET /api/users/:username", () => {
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("User not found");
+      });
+  });
+});
+
+// 18. PATCH /api/comments/:comment_id
+describe("PATCH /api/comments/:comment_id", () => {
+  it("should respond with the updated comment, with votes incremented and a 200 status code", () => {
+    const testUpdate = { incVotes: 100 };
+
+    return request(app)
+      .patch("/api/comments/1")
+      .send(testUpdate)
+      .expect(200)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment.votes).toBe(116);
+      });
+  });
+  it("should respond with the updated comment, with votes decremented and a 200 status code", () => {
+    const testUpdate = { incVotes: -16 };
+
+    return request(app)
+      .patch("/api/comments/1")
+      .send(testUpdate)
+      .expect(200)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment.votes).toBe(0);
+      });
+  });
+  it("responds with a 400 status code when passed an invalid request body", () => {
+    const testUpdate = { wrong_key: 100 };
+
+    return request(app)
+      .patch("/api/comments/1")
+      .send(testUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid key in patch body");
+      });
+  });
+  it("should respond with a 400 status code if given an incorrect data type", () => {
+    const testUpdate = { incVotes: "not_a_number" };
+
+    return request(app)
+      .patch(`/api/comments/1`)
+      .send(testUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Bad request");
+      });
+  });
+  it("responds with a 400 status code and an error message when passed an invalid review id", () => {
+    const testUpdate = { incVotes: 1 };
+
+    return request(app)
+      .patch("/api/comments/banana")
+      .send(testUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Bad request");
+      });
+  });
+  it("should respond with a 404 status code if given the ID of a non-existent review", () => {
+    const testUpdate = { incVotes: 1 };
+
+    return request(app)
+      .patch("/api/comments/1000")
+      .send(testUpdate)
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Comment not found");
       });
   });
 });
