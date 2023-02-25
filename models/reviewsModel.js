@@ -136,7 +136,7 @@ exports.addCommentByReviewId = (reviewId, username, body) => {
     });
 };
 
-exports.updateReview = (reviewID, inc_votes) => {
+exports.updateReview = (reviewID, incVotes) => {
   return db
     .query(
       `
@@ -146,7 +146,7 @@ exports.updateReview = (reviewID, inc_votes) => {
       WHERE review_id = $2
       RETURNING *;
     `,
-      [inc_votes, reviewID]
+      [incVotes, reviewID]
     )
     .then((result) => {
       if (result.rowCount === 0) {
