@@ -57,17 +57,10 @@ exports.addCommentByReviewId = (req, res, next) => {
 
 exports.updateReview = (req, res, next) => {
   const { reviewId } = req.params;
-  const { inc_votes } = req.body;
-
-  if (inc_votes && typeof inc_votes !== "number") {
-    return next({
-      status: 400,
-      message: "Invalid data type for inc_votes",
-    });
-  }
+  const { incVotes } = req.body;
 
   reviewsModel
-    .updateReview(reviewId, inc_votes)
+    .updateReview(reviewId, incVotes)
     .then((review) => {
       res.status(200).json({
         review: review,
