@@ -35,6 +35,8 @@ app.delete("/api/comments/:commentId", commentsController.deleteComment);
 
 app.get("/api/users/:username", usersController.getUser);
 
+app.patch("/api/comments/:commentId", commentsController.updateComment);
+
 app.get("/api", endpointsController.getEndpoints);
 
 app.all("*", (req, res) => {
