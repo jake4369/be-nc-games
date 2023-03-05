@@ -577,7 +577,7 @@ describe("GET /api/reviews/:review_id", () => {
         expect(review).toMatchObject(expectedReview);
       });
   });
-  it("", () => {
+  it("should respond with a 400 status code if invalid ID type is given", () => {
     return request(app)
       .get("/api/reviews/notAnID")
       .expect(400)
