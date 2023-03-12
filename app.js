@@ -43,6 +43,8 @@ app.get("/api", endpointsController.getEndpoints);
 
 app.post("/api/reviews", reviewsController.addReview);
 
+app.post("/api/categories", categoriesController.addCategory);
+
 app.all("*", (req, res) => {
   res.status(400).send({ message: "Path not found!" });
 });
