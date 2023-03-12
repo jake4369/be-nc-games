@@ -8,7 +8,10 @@ exports.getReviews = (req, res, next) => {
   reviewsModel
     .getReviews(sort_by, order, category)
     .then((reviews) => {
-      res.status(200).json({ reviews: reviews });
+      res.status(200).json({
+        results: reviews.length,
+        reviews: reviews,
+      });
     })
     .catch((error) => {
       next(error);

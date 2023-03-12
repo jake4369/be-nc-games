@@ -5,6 +5,7 @@ exports.getCategories = (req, res, next) => {
     .getCategories()
     .then((categories) => {
       res.status(200).json({
+        results: categories.length,
         categories: categories,
       });
     })
