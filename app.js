@@ -45,6 +45,8 @@ app.post("/api/reviews", reviewsController.addReview);
 
 app.post("/api/categories", categoriesController.addCategory);
 
+app.delete("/api/reviews/:reviewId", reviewsController.deleteReview);
+
 app.all("*", (req, res) => {
   res.status(400).send({ message: "Path not found!" });
 });
