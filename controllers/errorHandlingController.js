@@ -8,9 +8,9 @@ exports.handlePsqlErrors = (err, req, res, next) => {
   if (err.code === "22P02") {
     res.status(400).send({ message: "Bad request" });
   } else if (err.code === "23502") {
-    res.status(400).send({ message: "Invalid key in patch body" });
+    res.status(400).send({ message: "Missing or invalid key in patch body" });
   } else if (err.code === "23503") {
-    res.status(404).send({ message: "Review not found" });
+    res.status(400).send({ message: "Bad request" });
   } else next(err);
 };
 
