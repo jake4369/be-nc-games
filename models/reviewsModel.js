@@ -201,3 +201,25 @@ exports.addReview = (
       return review;
     });
 };
+
+exports.deleteReview = (reviewId) => {
+  return db
+    .query(
+      `
+      DELETE FROM reviews
+      WHERE review_id = $1
+      RETURNING *;
+    `,
+      [reviewId]
+    )
+    .then((results) => {
+      if (results.rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          message: "Review not found",
+        });
+      }
+      const review = results.rows[0];
+      return review;
+    });
+};
