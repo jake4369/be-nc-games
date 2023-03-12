@@ -2,55 +2,41 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
+// MIDDLEWARE
 app.use(express.json());
 app.use(cors());
 
-const categoriesController = require("./controllers/categoriesController");
-const commentsController = require("./controllers/commentsController");
-const endpointsController = require("./controllers/endpointsController");
-const reviewsController = require("./controllers/reviewsController");
-const usersController = require("./controllers/usersController");
-
+// CONTROLLERS
 const errorHandlingController = require("./controllers/errorHandlingController");
 
-app.get("/api/categories", categoriesController.getCategories);
+// ROUTES
+const endpointsRouter = require("./routes/endpointsRoutes");
+const categoriesRouter = require("./routes/categoriesRoutes");
+const commentsRouter = require("./routes/commentsRoutes");
+const reviewsRouter = require("./routes/reviewsRouter");
+const usersRouter = require("./routes/usersRoutes");
 
-app.get("/api/reviews", reviewsController.getReviews);
+// ENDPOINTS
+app.use("/api", endpointsRouter);
 
-app.get("/api/reviews/:reviewId", reviewsController.getReview);
+// CATEGORIES
+app.use("/api/categories", categoriesRouter);
 
-app.get(
-  "/api/reviews/:reviewId/comments",
-  reviewsController.getCommentsByReviewId
-);
+// COMMENTS
+app.use("/api/comments", commentsRouter);
 
-app.post(
-  "/api/reviews/:reviewId/comments",
-  reviewsController.addCommentByReviewId
-);
+// REVIEWS
+app.use("/api/reviews", reviewsRouter);
 
-app.patch("/api/reviews/:reviewId", reviewsController.updateReview);
+// USERS
+app.use("/api/users", usersRouter);
 
-app.get("/api/users", usersController.getUsers);
-
-app.delete("/api/comments/:commentId", commentsController.deleteComment);
-
-app.get("/api/users/:username", usersController.getUser);
-
-app.patch("/api/comments/:commentId", commentsController.updateComment);
-
-app.get("/api", endpointsController.getEndpoints);
-
-app.post("/api/reviews", reviewsController.addReview);
-
-app.post("/api/categories", categoriesController.addCategory);
-
-app.delete("/api/reviews/:reviewId", reviewsController.deleteReview);
-
+// All routes
 app.all("*", (req, res) => {
   res.status(400).send({ message: "Path not found!" });
 });
 
+// ERROR HANDLING MIDDLEWARE
 app.use(errorHandlingController.handleCustomErrors);
 app.use(errorHandlingController.handlePsqlErrors);
 app.use(errorHandlingController.handleServerErrors);
