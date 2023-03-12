@@ -71,3 +71,23 @@ exports.updateReview = (req, res, next) => {
     })
     .catch((error) => next(error));
 };
+
+exports.addReview = (req, res, next) => {
+  const { owner, title, review_body, designer, category, review_img_url } =
+    req.body;
+
+  if (!owner || !title || !review_body || !designer || !category) {
+    return res.status(400).json({
+      message: "Missing required properties",
+    });
+  }
+
+  reviewsModel
+    .addReview(owner, title, review_body, designer, category, review_img_url)
+    .then((review) => {
+      res.status(201).json({
+        review: review,
+      });
+    })
+    .catch((error) => next(error));
+};
