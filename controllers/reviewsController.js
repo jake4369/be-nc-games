@@ -91,3 +91,14 @@ exports.addReview = (req, res, next) => {
     })
     .catch((error) => next(error));
 };
+
+exports.deleteReview = (req, res, next) => {
+  const { reviewId } = req.params;
+
+  reviewsModel
+    .deleteReview(reviewId)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch((error) => next(error));
+};
