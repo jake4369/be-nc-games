@@ -973,6 +973,32 @@ describe("POST /api/categories", () => {
   });
 });
 
+// 23. DELETE /api/reviews/:review_id
+describe("DELETE /api/reviews/:review_id", () => {
+  it("should respond with a 204 status code", () => {
+    return request(app).delete("/api/reviews/1").expect(204);
+  });
+  it("should respond with a 404 status code if review does not exist", () => {
+    return request(app)
+      .delete("/api/reviews/10000")
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Review not found");
+      });
+  });
+
+  it("should respond with a 400 status code if review ID is not a number", () => {
+    return request(app)
+      .delete("/api/reviews/invalid-id")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Bad request");
+      });
+  });
+});
+
 describe("400 error on /api/not-path", () => {
   it("status 400 returns error message bad path when provided an invalid path", () => {
     return request(app)
