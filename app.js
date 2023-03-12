@@ -41,6 +41,8 @@ app.patch("/api/comments/:commentId", commentsController.updateComment);
 
 app.get("/api", endpointsController.getEndpoints);
 
+app.post("/api/reviews", reviewsController.addReview);
+
 app.all("*", (req, res) => {
   res.status(400).send({ message: "Path not found!" });
 });
