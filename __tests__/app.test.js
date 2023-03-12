@@ -330,7 +330,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid key in patch body");
+        expect(message).toBe("Missing or invalid key in patch body");
       });
   });
   it("should respond with a 400 status code if given an incorrect data type", () => {
@@ -716,7 +716,7 @@ describe("PATCH /api/comments/:comment_id", () => {
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid key in patch body");
+        expect(message).toBe("Missing or invalid key in patch body");
       });
   });
   it("should respond with a 400 status code if given an incorrect data type", () => {
@@ -753,6 +753,142 @@ describe("PATCH /api/comments/:comment_id", () => {
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("Comment not found");
+      });
+  });
+});
+
+// 19. POST /api/reviews
+describe("POST /api/reviews", () => {
+  it("should respond with a object containing the correct properties, a 201 status code, and increase the number of reviews", () => {
+    const testReview = {
+      title: "Monopoly",
+      designer: "Charles Darrow",
+      owner: "mallionaire",
+      review_img_url:
+        "https://images.pexels.com/photos/1329645/pexels-photo-1329645.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      review_body:
+        "Few board games are able to bring young and old players together quite as Monopoly can.",
+      category: "children's games",
+    };
+
+    const expectedResponse = {
+      title: "Monopoly",
+      designer: "Charles Darrow",
+      owner: "mallionaire",
+      review_img_url:
+        "https://images.pexels.com/photos/1329645/pexels-photo-1329645.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      review_body:
+        "Few board games are able to bring young and old players together quite as Monopoly can.",
+      category: "children's games",
+      review_id: expect.any(Number),
+      votes: expect.any(Number),
+      created_at: expect.any(String),
+      comment_count: expect.any(Number),
+    };
+
+    return request(app)
+      .post("/api/reviews")
+      .send(testReview)
+      .expect(201)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject(testReview);
+      })
+      .then(() => {
+        return request(app)
+          .get("/api/reviews/14")
+          .expect(200)
+          .then(({ body }) => {
+            const { review } = body;
+            expect(review).toMatchObject(expectedResponse);
+          });
+      })
+      .then(() => {
+        return request(app)
+          .get("/api/reviews")
+          .expect(200)
+          .then(({ body }) => {
+            const { reviews } = body;
+            expect(reviews.length).toBe(14);
+          });
+      });
+  });
+  it("should set a default value for the 'review_img_url' property if it is not provided", () => {
+    const testReview = {
+      title: "Monopoly",
+      designer: "Charles Darrow",
+      owner: "mallionaire",
+      review_body:
+        "Few board games are able to bring young and old players together quite as Monopoly can.",
+      category: "children's games",
+    };
+
+    const expectedResponse = {
+      title: "Monopoly",
+      designer: "Charles Darrow",
+      owner: "mallionaire",
+      review_img_url:
+        "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg?w=700&h=700",
+      review_body:
+        "Few board games are able to bring young and old players together quite as Monopoly can.",
+      category: "children's games",
+      review_id: expect.any(Number),
+      votes: expect.any(Number),
+      created_at: expect.any(String),
+      comment_count: expect.any(Number),
+    };
+
+    return request(app)
+      .post("/api/reviews")
+      .send(testReview)
+      .expect(201)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject(testReview);
+      })
+      .then(() => {
+        return request(app)
+          .get("/api/reviews/14")
+          .expect(200)
+          .then(({ body }) => {
+            const { review } = body;
+            expect(review).toMatchObject(expectedResponse);
+          });
+      });
+  });
+  it("should respond with an error if any required properties are missing", () => {
+    const testReview = {
+      title: "Monopoly",
+      designer: "Charles Darrow",
+      review_body:
+        "Few board games are able to bring young and old players together quite as Monopoly can.",
+      category: "children's games",
+    };
+
+    return request(app)
+      .post("/api/reviews")
+      .send(testReview)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Missing required properties");
+      });
+  });
+  it("should respond with an error if the specified category does not exist", () => {
+    const testReview = {
+      title: "Monopoly",
+      designer: "Charles Darrow",
+      owner: "mallionaire",
+      review_body:
+        "Few board games are able to bring young and old players together quite as Monopoly can.",
+      category: "non-existent category",
+    };
+
+    return request(app)
+      .post("/api/reviews")
+      .send(testReview)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad request");
       });
   });
 });
