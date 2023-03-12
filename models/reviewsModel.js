@@ -109,14 +109,31 @@ exports.addCommentByReviewId = (reviewId, username, body) => {
   return db
     .query(
       `
-      INSERT INTO comments
-        (review_id, author, body)
-      VALUES
-        ($1, $2, $3)
-      RETURNING *;
+      SELECT *
+      FROM reviews
+      WHERE review_id = $1;
     `,
-      [reviewId, username, body]
+      [reviewId]
     )
+    .then((result) => {
+      const review = result.rows[0];
+      if (!review) {
+        return Promise.reject({
+          status: 404,
+          message: "Review not found",
+        });
+      }
+      return db.query(
+        `
+        INSERT INTO comments
+          (review_id, author, body)
+        VALUES
+          ($1, $2, $3)
+        RETURNING *;
+      `,
+        [reviewId, username, body]
+      );
+    })
     .then((result) => {
       const comment = result.rows[0];
       return comment;
@@ -155,6 +172,31 @@ exports.updateReview = (reviewID, incVotes) => {
           message: `Review not found`,
         });
       }
+      const review = result.rows[0];
+      return review;
+    });
+};
+
+exports.addReview = (
+  owner,
+  title,
+  review_body,
+  designer,
+  category,
+  review_img_url = "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg?w=700&h=700"
+) => {
+  return db
+    .query(
+      `
+      INSERT INTO reviews
+        (owner, title, review_body, designer, category, review_img_url)
+      VALUES
+        ($1, $2, $3, $4, $5, $6)
+      RETURNING *;
+    `,
+      [owner, title, review_body, designer, category, review_img_url]
+    )
+    .then((result) => {
       const review = result.rows[0];
       return review;
     });
