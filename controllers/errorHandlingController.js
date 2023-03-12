@@ -13,6 +13,8 @@ exports.handlePsqlErrors = (err, req, res, next) => {
     res.status(400).send({ message: "Missing or invalid key in patch body" });
   } else if (err.code === "23503") {
     res.status(400).send({ message: "Bad request" });
+  } else if (err.code === "23505") {
+    res.status(409).send({message: "Category already exists"});
   } else next(err);
 };
 
