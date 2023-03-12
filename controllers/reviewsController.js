@@ -9,7 +9,7 @@ exports.getReviews = (req, res, next) => {
     .getReviews(sort_by, order, category)
     .then((reviews) => {
       res.status(200).json({
-        results: reviews.length,
+        total_count: reviews.length,
         reviews: reviews,
       });
     })
