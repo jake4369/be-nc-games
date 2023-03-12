@@ -893,6 +893,86 @@ describe("POST /api/reviews", () => {
   });
 });
 
+// 22. POST /api/categories
+describe("POST /api/categories", () => {
+  it("responds with a category object containing the newly added topic", () => {
+    const testCategory = {
+      slug: "Example-category",
+      description: "Example description",
+    };
+
+    const expectedResponse = {
+      slug: expect.any(String),
+      description: expect.any(String),
+    };
+
+    return request(app)
+      .post("/api/categories")
+      .send(testCategory)
+      .expect(201)
+      .then(({ body }) => {
+        const { category } = body;
+        expect(category).toMatchObject(expectedResponse);
+      })
+      .then(() => {
+        return request(app)
+          .get("/api/categories")
+          .expect(200)
+          .then(({ body }) => {
+            const { categories } = body;
+            expect(categories.length).toBe(5);
+          });
+      });
+  });
+  it("responds with a 400 status code and error message if slug is missing", () => {
+    const testCategory = {
+      description: "Example description",
+    };
+
+    return request(app)
+      .post("/api/categories")
+      .send(testCategory)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe(
+          "Both 'slug' and 'description' keys are required."
+        );
+      });
+  });
+  it("responds with a 400 status code and error message if description is missing", () => {
+    const testCategory = {
+      slug: "Example-category",
+    };
+
+    return request(app)
+      .post("/api/categories")
+      .send(testCategory)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe(
+          "Both 'slug' and 'description' keys are required."
+        );
+      });
+  });
+  it("responds with a 409 status code and error message if category already exists", () => {
+    const testCategory = {
+      slug: "euro game",
+      description: "Abstact games that involve little luck",
+    };
+
+    return request(app)
+      .post("/api/categories")
+      .send(testCategory)
+      .expect(409)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Category already exists");
+      });
+  });
+});
+
 describe("400 error on /api/not-path", () => {
   it("status 400 returns error message bad path when provided an invalid path", () => {
     return request(app)
