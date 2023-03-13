@@ -24,3 +24,16 @@ exports.getUser = (req, res, next) => {
     })
     .catch((error) => next(error));
 };
+
+exports.addUser = (req, res, next) => {
+  const { username, name, avatar_url } = req.body;
+
+  usersModel
+    .addUser(username, name, avatar_url)
+    .then((user) => {
+      res.status(201).json({ user: user });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};

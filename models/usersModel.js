@@ -33,3 +33,19 @@ exports.getUser = (username) => {
       return user;
     });
 };
+
+exports.addUser = (username, name, avatar_url) => {
+  return db
+    .query(
+      `
+      INSERT INTO users (username, name, avatar_url)
+      VALUES ($1, $2, $3)
+      RETURNING *;
+    `,
+      [username, name, avatar_url]
+    )
+    .then((result) => {
+      const user = result.rows[0];
+      return user;
+    });
+};
